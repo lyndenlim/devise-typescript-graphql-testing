@@ -13,9 +13,6 @@ const App: React.FC = () => {
     setTodo("")
   }
 
-  console.log(allTodos)
-
-
   return (
     <div className="App">
       <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />

@@ -1,5 +1,5 @@
 import { Todo } from "../model"
-
+import { useState } from "react"
 interface Props {
     todo: Todo;
     allTodos: Todo[];
@@ -8,9 +8,28 @@ interface Props {
 
 
 const TodoItem: React.FC<Props> = ({ todo, allTodos, setAllTodos }) => {
+    const [isEditable, setIsEditable] = useState<boolean>(false)
+    const [edittedTodo, setEdittedTodo] = useState<string>(todo.todo)
+
+    const handleDelete = (id: number, e: React.FormEvent) => {
+        setAllTodos(allTodos.filter(todo => todo.id !== id))
+    }
+
+    const makeEditable = (e: React.FormEvent) => {
+        setIsEditable(true)
+    }
+
+    const handleEdit = (e: React.FormEvent, id: number) => {
+        e.preventDefault()
+        setAllTodos(allTodos.map(todo => (todo.id === id ? { ...todo, todo: edittedTodo } : todo)))
+        setIsEditable(false)
+    }
+
     return (
-        <form>
-            <span>{todo.todo}</span>
+        <form onSubmit={e => handleEdit(e, todo.id)}>
+            {!isEditable ? <span>{todo.todo}</span> : <input onChange={e => setEdittedTodo(e.target.value)} value={edittedTodo} />}
+            <span onClick={(e) => makeEditable(e)}>Edit</span>
+            <span onClick={(e) => handleDelete(todo.id, e)}>Delete</span>
         </form>
     )
 }
